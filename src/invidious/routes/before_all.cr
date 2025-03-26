@@ -61,17 +61,17 @@ module Invidious::Routes::BeforeAll
       env.response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
     end
 
-    return if {
-                "/sb/",
-                "/vi/",
-                "/s_p/",
-                "/yts/",
-                "/ggpht/",
-                "/api/manifest/",
-                "/videoplayback",
-                "/latest_version",
-                "/download",
-              }.any? { |r| env.request.resource.starts_with? r }
+    # return if {
+    #             "/sb/",
+    #             "/vi/",
+    #             "/s_p/",
+    #             "/yts/",
+    #             "/ggpht/",
+    #             "/api/manifest/",
+    #             "/videoplayback",
+    #             "/latest_version",
+    #             "/download",
+    #           }.any? { |r| env.request.resource.starts_with? r }
 
     if env.request.cookies.has_key? "SID"
       sid = env.request.cookies["SID"].value
@@ -122,5 +122,10 @@ module Invidious::Routes::BeforeAll
     end
 
     env.set "current_page", URI.encode_www_form(current_page)
+
+    if !env.request.resource.starts_with?("/login") && (!env.request.cookies.has_key?("SID") || !user)
+      env.response.headers["Location"] = "/login?referer=#{env.get("current_page")}"
+      haltf env, status_code: 302
+    end
   end
 end
