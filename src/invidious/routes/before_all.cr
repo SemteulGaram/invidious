@@ -61,17 +61,17 @@ module Invidious::Routes::BeforeAll
       env.response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
     end
 
-    # return if {
-    #             "/sb/",
-    #             "/vi/",
-    #             "/s_p/",
-    #             "/yts/",
-    #             "/ggpht/",
-    #             "/api/manifest/",
-    #             "/videoplayback",
-    #             "/latest_version",
-    #             "/download",
-    #           }.any? { |r| env.request.resource.starts_with? r }
+    return if {
+                "/sb/",
+                "/vi/",
+                "/s_p/",
+                "/yts/",
+                "/ggpht/",
+                "/api/manifest/",
+                "/videoplayback",
+                "/latest_version",
+                "/download",
+              }.any? { |r| env.request.resource.starts_with? r }
 
     if env.request.cookies.has_key? "SID"
       sid = env.request.cookies["SID"].value
